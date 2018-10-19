@@ -17,18 +17,20 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  String result = "Hey there !";
+  String result = "Welcome to DevFest Gandhinagar!";
 
   Future _scanQR() async {
     try {
-      String qrResult = await BarcodeScanner.scan();
+      String qrResult = await BarcodeScanner.scan().then((val)  {
+        print(val);
+      });
       setState(() {
         result = qrResult;
       });
     } on PlatformException catch (ex) {
       if (ex.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          result = "Camera permission was denied";
+          result = "why you not let me use your cam?";
         });
       } else {
         setState(() {
@@ -37,7 +39,7 @@ class HomePageState extends State<HomePage> {
       }
     } on FormatException {
       setState(() {
-        result = "You pressed the back button before scanning anything";
+        result = "You need to show me his qr before i can let him enter :)";
       });
     } catch (ex) {
       setState(() {
@@ -49,18 +51,47 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("QR Scanner"),
-      ),
-      body: Center(
-        child: Text(
-          result,
-          style: new TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-        ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Container(
+            child: Image.asset(
+              'assets/images/bg.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.only(top: 40.0),
+              child: Text(
+                "Devfest Gandhinagar",
+                style: new TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              result,
+              style: new TextStyle(
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.camera_alt),
-        label: Text("Scan"),
+        backgroundColor: Colors.white,
+        icon: Icon(Icons.camera_alt, color: Colors.black),
+        label: Text(
+          "Scan",
+          style: TextStyle(color: Colors.black),
+        ),
         onPressed: _scanQR,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
